@@ -8,7 +8,8 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:paddingBottom="0dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/relativeLayout">
 
     <GridLayout
         android:id="@+id/gridview"
