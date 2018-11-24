@@ -6,8 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,34 +26,31 @@ public class MoviesFragment extends Fragment {
     static ArrayList<String> posters;
     static boolean sortByPop;
     public MoviesFragment() {
-
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm =(WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        if (MainActivity.TABLET) {
-
+        if(MainActivity.TABLET) {
             width = size.x/6;
         }
-        else width = size.x/3;
-        if (getActivity() != null) {
+        else width=size.x/3;
+        if(getActivity()!=null) {
 
-            ArrayList<String> array = new ArrayList<>();
-            ImageAdapter adapter = new ImageAdapter(getActivity(),array, width);
+            ArrayList<String> array = new ArrayList<String>();
+            ImageAdapter adapter = new ImageAdapter(getActivity(),array,width);
             gridview = (GridView)rootView.findViewById(R.id.gridview);
 
             gridview.setColumnWidth(width);
             gridview.setAdapter(adapter);
         }
-
+        //listen for presses on gridview items
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -64,63 +58,70 @@ public class MoviesFragment extends Fragment {
             }
         });
 
+
         return rootView;
     }
-
     @Override
     public void onStart() {
-
         super.onStart();
         getActivity().setTitle("Most Popular Movies");
 
-        if (isNetWorkAvailable()) {
+        if(isNetworkAvailable()) {
 
             gridview.setVisibility(GridView.VISIBLE);
             new ImageLoadTask().execute();
         }
-        else {
-            TextView textView1 = new TextView(getActivity());
-            RelativeLayout layout1 = (RelativeLayout)getActivity().findViewById(R.id.relativeLayout);
-            textView1.setText("You are not connected to the Internet");
-            if (layout1.getChildCount() == 1) {
+        else{
+            TextView textview1 = new TextView(getActivity());
+            RelativeLayout layout1 = (RelativeLayout)getActivity().findViewById(R.id.relativelayout);
+            textview1.setText("You are not connected to the Internet");
+            if(layout1.getChildCount()==1) {
 
-                layout1.addView(textView1);
+                layout1.addView(textview1);
             }
             gridview.setVisibility(GridView.GONE);
         }
     }
 
-    public boolean isNetWorkAvailable() {
+    public boolean isNetworkAvailable() {
 
         ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        return activeNetworkInfo !=null &&activeNetworkInfo.isConnected();
     }
-
-    public class ImageLoadTask extends AsyncTask<Void, Void, ArrayList<String>> {
+    public class ImageLoadTask extends AsyncTask<Void, Void, ArrayList<String>>{
 
         @Override
         protected ArrayList<String> doInBackground(Void... params) {
-            while (true) {
-                try {
-                    posters = new ArrayList<>(Arrays.asList(getPathsFromAPI(sortByPop)));
+            while(true){
+                try{
+                    posters = new ArrayList(Arrays.asList(getPathsFromAPI(sortByPop)));
                     return posters;
                 }
-                catch (Exception e) {
-
+                catch(Exception e) {
                     continue;
                 }
             }
-        }
 
+        }
+        @Override
+        protected void onPostExecute(ArrayList<String>result) {
+            if(result!=null && getActivity()!=null) {
+
+                ImageAdapter adapter = new ImageAdapter(getActivity(),result, width);
+                gridview.setAdapter(adapter);
+
+            }
+        }
         public String[] getPathsFromAPI(boolean sort) {
 
             String[] array = new String[15];
-            for (int i = 0; i < array.length; i++) {
+            for(int i = 0; i<array.length;i++) {
 
                 array[i] = "/kqjL17yufvn9OVLyXYpvtyrFfak.jpg";
             }
             return array;
+
         }
     }
 }
