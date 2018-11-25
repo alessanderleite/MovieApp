@@ -5,5 +5,6 @@
         android:key="sortby"
         android:defaultValue="popularity"
         android:entries="@array/pref_entries"
-        android:entryValues="@array/pref_values"></ListPreference>
+        android:entryValues="@array/pref_values">
+    </ListPreference>
 </PreferenceScreen>
