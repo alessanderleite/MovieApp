@@ -1,11 +1,13 @@
 package com.example.alessander.movieapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,13 +32,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 public class MoviesFragment extends Fragment {
     static GridView gridview;
     static int width;
     static ArrayList<String> posters;
-    static boolean sortByPop;
+    static boolean sortByPop = true;
     static String API_KEY = "d0900c37c7422cd4ba21fbaa2e0c0fd8";
+
+    static PreferenceChangeListener listener;
+    static SharedPreferences prefs;
+    static boolean sortByFavorites;
+    static ArrayList<String> postersF = new ArrayList<String>();
 
     public MoviesFragment() {
     }
@@ -73,25 +83,81 @@ public class MoviesFragment extends Fragment {
 
         return rootView;
     }
+
+    private class PreferenceChangeListener implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            gridview.setAdapter(null);
+            onStart();
+        }
+    }
+
     @Override
     public void onStart() {
+
         super.onStart();
-        getActivity().setTitle("Most Popular Movies");
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        listener = new PreferenceChangeListener();
+        prefs.registerOnSharedPreferenceChangeListener(listener);
 
-        if(isNetworkAvailable()) {
+        if (prefs.getString("sortby", "popularity").equals("popularity")) {
 
-            gridview.setVisibility(GridView.VISIBLE);
-            new ImageLoadTask().execute();
+            getActivity().setTitle("Most Popular Movies");
+            sortByPop = true;
+            sortByFavorites = false;
         }
-        else{
-            TextView textview1 = new TextView(getActivity());
-            RelativeLayout layout1 = (RelativeLayout)getActivity().findViewById(R.id.relativelayout);
-            textview1.setText("You are not connected to the Internet");
-            if(layout1.getChildCount()==1) {
+        else if (prefs.getString("sortby", "popularity").equals("rating")) {
 
-                layout1.addView(textview1);
+            getActivity().setTitle("Highest Rated Movies");
+            sortByPop = false;
+            sortByFavorites = false;
+        }
+        else if (prefs.getString("sortby", "popularity").equals("favorites")) {
+
+            getActivity().setTitle("Favorited Movies");
+            sortByPop = false;
+            sortByFavorites = true;
+        }
+        TextView textView = new TextView(getActivity());
+        LinearLayout layout = (LinearLayout)getActivity().findViewById(R.id.linearlayout);
+        if (sortByFavorites) {
+
+            if (postersF.size() == 0) {
+
+                textView.setText("You have no favorites movies.");
+                if (layout.getChildCount() == 1)
+                    layout.addView(textView);
+                gridview.setVisibility(GridView.GONE);
             }
-            gridview.setVisibility(GridView.GONE);
+            else {
+                gridview.setVisibility(GridView.VISIBLE);
+                layout.removeView(textView);
+            }
+            if (postersF != null && getActivity() != null) {
+
+                ImageAdapter adapter = new ImageAdapter(getActivity(), postersF, width);
+                gridview.setAdapter(adapter);
+            }
+        }
+        else {
+            gridview.setVisibility(GridView.VISIBLE);
+            layout.removeView(textView);
+
+
+            if (isNetworkAvailable()) {
+
+                new ImageLoadTask().execute();
+            } else {
+                TextView textview1 = new TextView(getActivity());
+                LinearLayout layout1 = (LinearLayout) getActivity().findViewById(R.id.linearlayout);
+                textview1.setText("You are not connected to the Internet");
+                if (layout1.getChildCount() == 1) {
+
+                    layout1.addView(textview1);
+                }
+                gridview.setVisibility(GridView.GONE);
+            }
         }
     }
 
