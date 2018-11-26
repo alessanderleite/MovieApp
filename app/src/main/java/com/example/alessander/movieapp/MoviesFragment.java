@@ -1,6 +1,7 @@
 package com.example.alessander.movieapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
@@ -47,6 +48,17 @@ public class MoviesFragment extends Fragment {
     static boolean sortByFavorites;
     static ArrayList<String> postersF = new ArrayList<String>();
 
+    static ArrayList<String> overviews;
+    static ArrayList<String> titles;
+    static ArrayList<String> dates;
+    static ArrayList<String> ratings;
+    static ArrayList<String> youtubes;
+    static ArrayList<String> youtubes2;
+    static ArrayList<String> ids;
+    static ArrayList<Boolean> favorited;
+    static ArrayList<ArrayList<String>> comments;
+
+
     public MoviesFragment() {
     }
 
@@ -76,7 +88,21 @@ public class MoviesFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(position);
+                favorited = new ArrayList<Boolean>();
+                for (int i = 0; i < titles.size(); i++) {
+
+                    favorited.add(false);
+                }
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra("poster", posters.get(position))
+                        .putExtra("title", titles.get(position))
+                        .putExtra("dates", dates.get(position))
+                        .putExtra("rating", ratings.get(position))
+                        .putExtra("youtube", youtubes.get(position))
+                        .putExtra("youtube2", youtubes2.get(position))
+                        .putExtra("comments", comments.get(position))
+                        .putExtra("favorite", favorited.get(position));
+                startActivity(intent);
             }
         });
 
