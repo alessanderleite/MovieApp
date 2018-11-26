@@ -257,7 +257,14 @@ public class MoviesFragment extends Fragment {
                    JSONResult = buffer.toString();
 
                    try {
+                       overviews = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "overview")));
+                       titles = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "original_title")));
+                       ratings = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "vote_average")));
+                       dates = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "release_date")));
+                       ids = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "id")));
+
                        return getPathsFromJSON(JSONResult);
+
                    } catch (JSONException e) {
 
                        return null;
@@ -280,6 +287,28 @@ public class MoviesFragment extends Fragment {
                    }
                }
            }
+        }
+
+        public String[] getStringsFromJSON(String JSONStringParam, String param) throws JSONException {
+
+            JSONObject JSONString = new JSONObject(JSONStringParam);
+
+            JSONArray moviesArray = JSONString.getJSONArray("results");
+            String[] result = new String[moviesArray.length()];
+
+            for (int i = 0; i < moviesArray.length(); i++) {
+
+                JSONObject movie = moviesArray.getJSONObject(i);
+                if (param.equals("vote_average")) {
+
+                    Double number = movie.getDouble("vote_average");
+                    String rating = Double.toString(number) + "/10";
+                    result[i] = rating;
+                }
+                String data = movie.getString(param);
+                result[i] = data;
+            }
+            return result;
         }
 
         public String[] getPathsFromJSON(String JSONStringParam) throws JSONException {
