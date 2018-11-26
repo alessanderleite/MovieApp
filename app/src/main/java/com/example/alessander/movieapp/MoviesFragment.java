@@ -263,6 +263,30 @@ public class MoviesFragment extends Fragment {
                        dates = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "release_date")));
                        ids = new ArrayList<String>(Arrays.asList(getStringsFromJSON(JSONResult, "id")));
 
+                       while (true) {
+                           youtubes = new ArrayList<String>(Arrays.asList(getYoutubesFromIds(ids, 0)));
+                           youtubes2 = new ArrayList<String>(Arrays.asList(getYoutubesFromIds(ids, 1)));
+                           int nullCount = 0;
+                           for (int i = 0; i < youtubes.size(); i++) {
+
+                               if (youtubes.get(i) == null) {
+
+                                   nullCount++;
+                                   youtubes.set(i, "no video found");
+                               }
+                           }
+                           for (int i = 0; i < youtubes2.size(); i++) {
+
+                               if (youtubes2.get(i) == null) {
+
+                                   nullCount++;
+                                   youtubes2.set(i, "no video found");
+                               }
+                           }
+                           if (nullCount > 2)continue;
+                           break;
+                       }
+                       comments = getReviewsFromIds(ids);
                        return getPathsFromJSON(JSONResult);
 
                    } catch (JSONException e) {
@@ -287,6 +311,67 @@ public class MoviesFragment extends Fragment {
                    }
                }
            }
+        }
+
+        public String[] getYoutubesFromIds(ArrayList<String> ids, int position) {
+
+            String[] results = new String[ids.size()];
+            for (int i = 0; i < ids.size(); i++) {
+
+                HttpURLConnection urlConnection = null;
+                BufferedReader reader = null;
+                String JSONResult;
+
+                try {
+                    String urlString = null;
+                    urlString = "http://api.themoviedb.org/3/movie/" + ids.get(i) + "/videos?api_key=" + API_KEY;
+
+                    URL url = new URL(urlString);
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
+
+                    //Read the input stream into a String
+                    InputStream inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+
+                        return null;
+                    }
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+
+                        buffer.append(line + "\n");
+                    }
+                    if (buffer.length() == 0) {
+
+                        return null;
+                    }
+                    JSONResult = buffer.toString();
+                    try {
+                        results[i] = getYoutubeFromJSON(JSONResult, position);
+                    } catch (JSONException e) {
+
+                        results[i] = "no video found";
+                    } catch (Exception e) {
+
+
+                    } finally {
+                        if (urlConnection != null) {
+                            urlConnection.disconnect();
+                        }
+                        if (reader != null) {
+                            try {
+                                reader.close();
+                            } catch (final IOException e) {
+
+                            }
+                        }
+                    }
+                } catch (Exception e) {}
+            }
+            return results;
         }
 
         public String[] getStringsFromJSON(String JSONStringParam, String param) throws JSONException {
