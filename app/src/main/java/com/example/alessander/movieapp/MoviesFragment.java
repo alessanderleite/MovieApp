@@ -354,24 +354,50 @@ public class MoviesFragment extends Fragment {
                     } catch (JSONException e) {
 
                         results[i] = "no video found";
-                    } catch (Exception e) {
+                    }
+                } catch (Exception e) { }
 
+                finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (final IOException e) {
 
-                    } finally {
-                        if (urlConnection != null) {
-                            urlConnection.disconnect();
-                        }
-                        if (reader != null) {
-                            try {
-                                reader.close();
-                            } catch (final IOException e) {
-
-                            }
                         }
                     }
-                } catch (Exception e) {}
+                }
+
             }
             return results;
+        }
+
+        public String getYoutubeFromJSON(String JSONStringParam, int position) throws JSONException {
+
+            JSONObject JSONString = new JSONObject(JSONStringParam);
+            JSONArray youtubesArray = JSONString.getJSONArray("results");
+            JSONObject youtube;
+            String result = "no videos found";
+            if (position == 0) {
+
+                youtube = youtubesArray.getJSONObject(0);
+                result = youtube.getString("Key");
+            }
+            else if (position == 1) {
+
+                if (youtubesArray.length() > 1) {
+
+                    youtube = youtubesArray.getJSONObject(1);
+                }
+                else {
+
+                    youtube = youtubesArray.getJSONObject(0);
+                }
+                result = youtube.getString("key");
+            }
+            return result;
         }
 
         public String[] getStringsFromJSON(String JSONStringParam, String param) throws JSONException {
