@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -33,8 +32,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 public class MoviesFragment extends Fragment {
     static GridView gridview;
@@ -421,7 +418,7 @@ public class MoviesFragment extends Fragment {
 
                     } catch (Exception e) {
                         continue outerloop;
-                        
+
                     } finally {
 
                         if (urlConnection != null) {
@@ -440,6 +437,24 @@ public class MoviesFragment extends Fragment {
                 }
                 return results;
             }
+        }
+
+        public ArrayList<String> getCommentsFromJSON(String JSONStringParam) throws JSONException {
+
+            JSONObject JSONString = new JSONObject(JSONStringParam);
+            JSONArray reviewsArray = JSONString.getJSONArray("results");
+            ArrayList<String> results = new ArrayList<>();
+            if (reviewsArray.length() == 0) {
+
+                results.add("No reviews found for this movie.");
+                return results;
+            }
+            for (int i = 0; i < reviewsArray.length(); i++) {
+
+                JSONObject result = reviewsArray.getJSONObject(i);
+                results.add(result.getString("content"));
+            }
+            return results;
         }
 
         public String getYoutubeFromJSON(String JSONStringParam, int position) throws JSONException {
