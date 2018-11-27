@@ -13,7 +13,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
 
-            getSupportFragmentManager().beginTransaction().add(R.id.container, new DetailActivityFragment()).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.containerDetail, new DetailActivityFragment()).commit();
 
         }
 
