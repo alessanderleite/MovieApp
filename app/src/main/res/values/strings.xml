@@ -13,4 +13,5 @@
         <item>favorites</item>
     </string-array>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="favorite">FAVORITE</string>
 </resources>
