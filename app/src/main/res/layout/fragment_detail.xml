@@ -25,7 +25,7 @@
                 android:background="#ff50ffc7"
                 android:textSize="35dp"
                 android:gravity="center_vertical"
-                android:textColor="ffffffff"
+                android:textColor="#ffffffff"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
