@@ -374,6 +374,74 @@ public class MoviesFragment extends Fragment {
             return results;
         }
 
+        public ArrayList<ArrayList<String>> getReviewsFromIds(ArrayList<String> ids) {
+
+            outerloop:
+            while (true) {
+
+                ArrayList<ArrayList<String>> results = new ArrayList<>();
+                for (int i = 0; i < ids.size(); i++) {
+
+                    HttpURLConnection urlConnection = null;
+                    BufferedReader reader = null;
+                    String JSONResult;
+
+                    try {
+                        String urlString = null;
+                        urlString = "http://api.themoviedb.org/3/movie/" + ids.get(i) + "/reviews?api_key=" + API_KEY;
+                        URL url = new URL(urlString);
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setRequestMethod("GET");
+                        urlConnection.connect();
+
+                        //Read the input stream into a String
+                        InputStream inputStream = urlConnection.getInputStream();
+                        StringBuffer buffer = new StringBuffer();
+                        if (inputStream == null) {
+
+                            return null;
+                        }
+                        reader = new BufferedReader(new InputStreamReader(inputStream));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+
+                            buffer.append(line + "\n");
+                        }
+                        if (buffer.length() == 0) {
+
+                            return null;
+                        }
+                        JSONResult = buffer.toString();
+                        try {
+
+                            results.add(getCommentsFromJSON(JSONResult));
+                        } catch (JSONException e) {
+                            return null;
+                        }
+
+                    } catch (Exception e) {
+                        continue outerloop;
+                        
+                    } finally {
+
+                        if (urlConnection != null) {
+
+                            urlConnection.disconnect();
+                        }
+                        if (reader != null) {
+                            try {
+
+                                reader.close();
+                            } catch (final IOException e) {
+
+                            }
+                        }
+                    }
+                }
+                return results;
+            }
+        }
+
         public String getYoutubeFromJSON(String JSONStringParam, int position) throws JSONException {
 
             JSONObject JSONString = new JSONObject(JSONStringParam);
