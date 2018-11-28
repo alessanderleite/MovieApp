@@ -3,6 +3,7 @@ package com.example.alessander.movieapp;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -63,11 +64,15 @@ public class DetailActivity extends AppCompatActivity {
 
     public void trailer1(View v) {
 
-        //Launch activity with first youtube video
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com" +
+                "/watch?v=" + DetailActivityFragment.youtube));
+        startActivity(browserIntent);
     }
 
     public void trailer2(View v) {
 
-        //Launch activity with second youtube video
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com" +
+                "/watch?v=" + DetailActivityFragment.youtube2));
+        startActivity(browserIntent);
     }
 }
