@@ -93,7 +93,7 @@ public class MoviesFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra("poster", posters.get(position))
                         .putExtra("title", titles.get(position))
-                        .putExtra("dates", dates.get(position))
+                        .putExtra("date", dates.get(position))
                         .putExtra("rating", ratings.get(position))
                         .putExtra("youtube", youtubes.get(position))
                         .putExtra("youtube2", youtubes2.get(position))
