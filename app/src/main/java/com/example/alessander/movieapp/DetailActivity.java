@@ -1,9 +1,14 @@
 package com.example.alessander.movieapp;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -19,12 +24,12 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        getMenuInflater().inflate(R.menu.menu_detail, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -32,9 +37,37 @@ public class DetailActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void favorite(View v) {
+
+        Button b = (Button) findViewById(R.id.favorite);
+        if (b.getText().equals("FAVORITE")) {
+
+            //code to store movie data in database
+            b.setText("UNFAVORITE");
+            b.getBackground().setColorFilter(Color.CYAN, PorterDuff.Mode.MULTIPLY);
+
+        } else {
+
+            b.setText("FAVORITE");
+            b.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        }
+    }
+
+    public void trailer1(View v) {
+
+        //Launch activity with first youtube video
+    }
+
+    public void trailer2(View v) {
+
+        //Launch activity with second youtube video
     }
 }
