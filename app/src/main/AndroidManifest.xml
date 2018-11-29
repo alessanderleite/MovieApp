@@ -23,6 +23,10 @@
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".DetailActivity"></activity>
+
+        <provider
+            android:authorities="com.example.alessander.provider.Movies"
+            android:name=".MovieProvider" />
     </application>
 
 </manifest>
