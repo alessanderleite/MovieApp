@@ -97,6 +97,7 @@ public class MoviesFragment extends Fragment {
                 if (!sortByFavorites) {
                     favorited = bindFavoritesToMovies();
                     Intent intent = new Intent(getActivity(), DetailActivity.class)
+                            .putExtra("overview", overviews.get(position))
                             .putExtra("poster", posters.get(position))
                             .putExtra("title", titles.get(position))
                             .putExtra("date", dates.get(position))
@@ -105,18 +106,21 @@ public class MoviesFragment extends Fragment {
                             .putExtra("youtube2", youtubes2.get(position))
                             .putExtra("comments", comments.get(position))
                             .putExtra("favorite", favorited.get(position));
+
                     startActivity(intent);
                 }
                 else {
                     Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .putExtra("poster", posters.get(position))
-                            .putExtra("title", titles.get(position))
-                            .putExtra("date", dates.get(position))
-                            .putExtra("rating", ratings.get(position))
-                            .putExtra("youtube", youtubes.get(position))
-                            .putExtra("youtube2", youtubes2.get(position))
-                            .putExtra("comments", comments.get(position))
+                            .putExtra("overview", overviewsF.get(position))
+                            .putExtra("poster", postersF.get(position))
+                            .putExtra("title", titlesF.get(position))
+                            .putExtra("date", datesF.get(position))
+                            .putExtra("rating", ratingsF.get(position))
+                            .putExtra("youtube", youtubesF.get(position))
+                            .putExtra("youtube2", youtubes2F.get(position))
+                            .putExtra("comments", commentsF.get(position))
                             .putExtra("favorite", favorited.get(position));
+
                     startActivity(intent);
                 }
             }
@@ -242,13 +246,13 @@ public class MoviesFragment extends Fragment {
         while (c.moveToNext()) {
 
             postersF.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
-            commentsF.add(convertStringToArrayList(c.getString(c.getColumnIndex(MovieProvider.NAME))));
-            titlesF.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
-            overviewsF.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
-            youtubesF.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
-            youtubes2F.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
-            datesF.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
-            ratingsF.add(c.getString(c.getColumnIndex(MovieProvider.NAME)));
+            commentsF.add(convertStringToArrayList(c.getString(c.getColumnIndex(MovieProvider.REVIEW))));
+            titlesF.add(c.getString(c.getColumnIndex(MovieProvider.TITLE)));
+            overviewsF.add(c.getString(c.getColumnIndex(MovieProvider.OVERVIEW)));
+            youtubesF.add(c.getString(c.getColumnIndex(MovieProvider.YOUTUBE1)));
+            youtubes2F.add(c.getString(c.getColumnIndex(MovieProvider.YOUTUBE2)));
+            datesF.add(c.getString(c.getColumnIndex(MovieProvider.DATE)));
+            ratingsF.add(c.getString(c.getColumnIndex(MovieProvider.RATING)));
             favorited.add(true);
 
         }
